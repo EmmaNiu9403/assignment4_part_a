@@ -138,8 +138,8 @@ public abstract class Critter {
 	
 	public static void displayWorld() 
 	{
-		int rows = Params.world_height;
-		int cols= Params.world_width;
+		int rows = Params.world_height + 2;
+		int cols= Params.world_width + 2;
 		
 		for(int i = 0; i < rows;i++)
 		{
@@ -156,7 +156,7 @@ public abstract class Critter {
 					boolean critterFlag = false;
 					for(Critter c : critterCollection)
 					{
-						if(c.y_coord == i - 2 && c.x_coord == j - 2)
+						if((c.y_coord == (i - 2)) && (c.x_coord == (j - 2)))
 						{
 							System.out.print(c);
 							critterFlag = true;
@@ -167,7 +167,7 @@ public abstract class Critter {
 				}
 			}
 			System.out.print("\n");
-		}
+}
 	}
 	
 	/* a one-character long string that visually depicts your critter in the ASCII interface */
