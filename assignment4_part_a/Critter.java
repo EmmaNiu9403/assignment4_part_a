@@ -11,6 +11,7 @@
  */
 package project4;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /* see the PDF for descriptions of the methods and fields in this class
@@ -18,6 +19,8 @@ import java.util.List;
  * no new public, protected or default-package code or data can be added to Critter
  */
 public abstract class Critter {
+	static ArrayList <Critter> critterCollection = new ArrayList <Critter>();
+	
 	
 	private static java.util.Random rand = new java.util.Random();
 	public static int getRandomInt(int max) {
@@ -55,7 +58,14 @@ public abstract class Critter {
 	 * critter_class_name must be the name of a concrete subclass of Critter, if not
 	 * an InvalidCritterException must be thrown
 	 */
-	public static void makeCritter(String critter_class_name) throws InvalidCritterException {
+	public static void makeCritter(String critter_class_name) throws InvalidCritterException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+          Class e = Class.forName(critter_class_name);
+          Critter c = (Critter) e.newInstance();
+          c.energy = Params.start_energy;
+          c.x_coord=getRandomInt(Params.world_width);
+          c.y_coord=getRandomInt(Params.world_height);
+          critterCollection.add(c);
+          
 	}
 	
 	public static List<Critter> getInstances(String critter_class_name) throws InvalidCritterException {
@@ -112,6 +122,30 @@ public abstract class Critter {
 	private static List<Critter> babies = new java.util.ArrayList<Critter>();
 		
 	public static void worldTimeStep() {
+		for(int i=0;i<critterCollection.size();i++){
+		critterCollection.get(i).doTimeStep();
+		}
+		
+		while(!critterCollection.isEmpty()){
+			int k=0;
+			for(int i=0;i<critterCollection.size();i++){
+				if(critterCollection.get(k).x_coord==critterCollection.get(i).x_coord&&critterCollection.get(k).y_coord==critterCollection.get(i).y_coord&&k!=i){
+					if(critterCollection.get(k).fight(critterCollection.get(i).toString())==false){
+						critterCollection.get(i).energy=0;
+						break;
+						}
+					
+				}
+			}
+			k++;
+		}
+		
+		for(int i=0;i<critterCollection.size();i++){
+			if(critterCollection.get(i).getEnergy()<=0){
+				critterCollection.remove(critterCollection.get(i));
+			}
+			
+		}
 	}
 	
 	public static void displayWorld() {}
