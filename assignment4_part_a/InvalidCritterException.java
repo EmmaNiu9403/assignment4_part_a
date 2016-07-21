@@ -1,6 +1,7 @@
 package project4;
 
-public class InvalidCritterException extends Exception {
+public class InvalidCritterException extends Exception 
+{
 	String offending_class;
 	
 	public InvalidCritterException(String critter_class_name) {

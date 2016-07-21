@@ -10,11 +10,21 @@
  * Summer 2016
  */
 package project4;
+import java.util.List;
 import java.util.Scanner;
 
 public class Main {
 
-	public static void main(String[] args) {
-		System.out.println("GLHF");
+	public static void main(String[] args) 
+	{	
+		while(true)
+		{
+			System.out.print("critters> ");
+			Scanner sc = new Scanner(System.in);
+			String in = sc.nextLine().trim();
+			ControllerCommands.processCommand(in);
+		}
 	}
+	
+	
 }
