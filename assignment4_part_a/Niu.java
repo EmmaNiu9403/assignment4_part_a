@@ -1,3 +1,13 @@
+/* CRITTERS Niu.java
+ * EE422C Project 4 submission by
+ * Replace <...> with your actual data.
+ * Kassandra Perez
+ * Kap2589
+ * Haoran Niu
+ * hn4582
+ * Slip days used: <0>
+ * Summer 2016
+ */
 package project4;
 
 public class Niu extends Critter {
@@ -16,15 +26,19 @@ public class Niu extends Critter {
 		dir = Critter.getRandomInt(8);
 	}
 	
+	@Override
 	public boolean fight(String not_used) { 
-		return true; 
-		}
+		int rand = Critter.getRandomInt(2);
+		if(rand == 0)
+			return true; 
+		else
+			return false; 
+	}
 
 	@Override
 	public void doTimeStep() {
 		/* take one step forward */
-		walk(dir);
-		if (getEnergy() > 150) {
+		if (getEnergy() > 350) {
 			Niu child = new Niu();
 			for (int k = 0; k < 8; k += 1) {
 				child.genes[k] = this.genes[k];

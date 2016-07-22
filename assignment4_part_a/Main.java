@@ -2,15 +2,13 @@
  * EE422C Project 4 submission by
  * Replace <...> with your actual data.
  * Kassandra Perez
- * kap2589
- * <Student2 Name>
- * <Student2 EID>
- * <Student2 5-digit Unique No.>
+ * Kap2589
+ * Haoran Niu
+ * hn4582
  * Slip days used: <0>
  * Summer 2016
  */
 package project4;
-import java.util.List;
 import java.util.Scanner;
 
 public class Main {

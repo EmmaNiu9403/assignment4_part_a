@@ -1,3 +1,13 @@
+/* CRITTERS Bob.java
+ * EE422C Project 4 submission by
+ * Replace <...> with your actual data.
+ * Kassandra Perez
+ * Kap2589
+ * Haoran Niu
+ * hn4582
+ * Slip days used: <0>
+ * Summer 2016
+ */
 package project4;
 
 public class Bob extends Critter {
@@ -16,9 +26,14 @@ public class Bob extends Critter {
 		dir = Critter.getRandomInt(8);
 	}
 	
+	@Override
 	public boolean fight(String not_used) 
 	{
-		return true; 
+		int rand = Critter.getRandomInt(100);
+		if(rand > 80)
+			return true; 
+		else
+			return false; 
 	}
 
 	@Override
@@ -27,7 +42,7 @@ public class Bob extends Critter {
 		/* take one step forward */
 		run(dir);
 		
-		if (getEnergy() > 150) {
+		if (getEnergy() > 100) {
 			Bob child = new Bob();
 			for (int k = 0; k < 8; k += 1) {
 				child.genes[k] = this.genes[k];

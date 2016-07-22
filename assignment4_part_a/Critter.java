@@ -2,10 +2,9 @@
  * EE422C Project 4 submission by
  * Replace <...> with your actual data.
  * Kassandra Perez
- * kap2589
- * <Student2 Name>
- * <Student2 EID>
- * <Student2 5-digit Unique No.>
+ * Kap2589
+ * Haoran Niu
+ * hn4582
  * Slip days used: <0>
  * Summer 2016
  */
@@ -20,16 +19,17 @@ import java.util.*;
 public abstract class Critter {
 	private static ArrayList<Critter> critterCollection = new ArrayList<Critter>();
 	private static java.util.Random rand = new java.util.Random();
-	private static List<Critter> population = new java.util.ArrayList<Critter>();
+//	private static List<Critter> population = new java.util.ArrayList<Critter>();
 	private static List<Critter> babies = new java.util.ArrayList<Critter>();
 	private int energy = 0;
 	private int x_coord;
 	private int y_coord;
 	private boolean moved = false;
+	private position pos = new position();
 	
 	private class position {
-		int x = x_coord;
-		int y = y_coord;
+		int x;
+		int y;
 
 		public boolean equals(position other) {
 			if (x == other.x && y == other.y) {
@@ -37,9 +37,15 @@ public abstract class Critter {
 			} else
 				return false;
 		}
+		public position()
+		{
+			this.x = x_coord;
+			this.y = y_coord;
+		}
+		
 	}
 	Critter.position position = new position();
-	Map<position, Critter> map = new HashMap<position, Critter>();
+	private static Map<position, Critter> map = new HashMap<position, Critter>();
 
 	public static int getRandomInt(int max) 
 	{
@@ -56,8 +62,9 @@ public abstract class Critter {
 	protected final void walk(int direction) 
 	{
 		this.energy -= Params.walk_energy_cost;
+		this.moved = true;
 		if(this.energy <= 0)
-			population.remove(this);
+			critterCollection.remove(this);
 		else
 			calculateMovement(direction, 1);
 	}
@@ -65,13 +72,14 @@ public abstract class Critter {
 	protected final void run(int direction) 
 	{
 		this.energy -= Params.run_energy_cost;
+		this.moved = true;
 		if(this.energy <= 0)
-			population.remove(this);
+			critterCollection.remove(this);
 		else
 			calculateMovement(direction, 2);
 	}
 	
-	private void calculateMovement(int dir, int movement)
+	private position calculateMovement(int dir, int movement)
 	{
 		switch(dir)
 		{
@@ -140,9 +148,12 @@ public abstract class Critter {
 					y_coord += movement;
 				break;
 		}
+		pos.x = x_coord;
+		pos.y = y_coord;
+		return pos;
 	}
 	
-	// TODO adding child at the end of time step
+	
 	protected final void reproduce(Critter offspring, int direction) 
 	{
 		if(this.energy < Params.min_reproduce_energy)
@@ -153,8 +164,8 @@ public abstract class Critter {
 		offspring.x_coord = this.x_coord;
 		offspring.y_coord = this.y_coord;
 		offspring.calculateMovement(direction, 1);
-		if(this.energy > 0)
-			population.remove(this);
+		if(this.energy >= 0)
+			critterCollection.remove(this);
 		else
 			this.energy = (int) Math.ceil(this.energy/2);
 		babies.add(offspring);
@@ -167,21 +178,21 @@ public abstract class Critter {
 	 * critter_class_name must be the name of a concrete subclass of Critter, if not
 	 * an InvalidCritterException must be thrown
 	 */
-	public static void makeCritter(String critter_class_name) throws InvalidCritterException, InstantiationException, IllegalAccessException, ClassNotFoundException 
+	public static void makeCritter(String critter_class_name) throws ClassNotFoundException, InstantiationException, IllegalAccessException 
 	{
 		Class<?> cName = Class.forName(critter_class_name);
 		Critter critter = (Critter) cName.newInstance();
 		critter.energy = Params.start_energy;
 		critter.x_coord = getRandomInt(Params.world_width);
 		critter.y_coord = getRandomInt(Params.world_height);
-		population.add(critter);
+		critterCollection.add(critter);
 	}
 	
 	public static List<Critter> getInstances(String critter_class_name) throws InvalidCritterException, ClassNotFoundException 
 	{
 		List<Critter> result = new java.util.ArrayList<Critter>();
 		
-		for(Critter c: population)
+		for(Critter c: critterCollection)
 		{
 			if(Class.forName(critter_class_name).isInstance(c))
 			{
@@ -222,23 +233,32 @@ public abstract class Critter {
 	}
 		
 	public static void worldTimeStep() throws InstantiationException, IllegalAccessException, ClassNotFoundException, InvalidCritterException 
-	{
+	{   
 		for (int i = 0; i < critterCollection.size(); i++) {
 			critterCollection.get(i).doTimeStep();
 		}
 		Iterator<Critter> iterator = critterCollection.iterator();
-		while (iterator.hasNext()) {
-			Critter C1 = iterator.next();
-			if (critterCollection.indexOf(C1) < critterCollection.size() - 1) {
-				Critter C2 = critterCollection.get(critterCollection.indexOf(C1) + 1);
-				if (C1.x_coord == C2.x_coord && C1.y_coord == C2.y_coord) {
-					doEncounter(C1, C2);
-				}
+		while(iterator.hasNext()){
+			Critter c1 =iterator.next();
+			if(!map.containsKey(c1.pos)){
+				map.put(c1.position, c1);
+			}
+			else{
+				Critter c2 = map.get(c1.pos);
+				doEncounter(c1,c2);
 			}
 		}
 
+		for(Critter c : critterCollection)
+		{
+			if(c.moved == false)
+			{
+				c.energy -= Params.rest_energy_cost;
+			}
+		}
+		
 		for(int i=0;i<Params.refresh_algae_count;i++){
-			makeCritter("project4.Algae");
+				makeCritter("project4.Algae");
 		}
 
 		Iterator <Critter> iterator1 = critterCollection.iterator();
@@ -248,6 +268,11 @@ public abstract class Critter {
 		}
 
 		critterCollection.addAll(babies);
+		
+		for(Critter c: critterCollection)
+		{
+			c.moved = false;
+		}
 	}
 	
 	private static void doEncounter(Critter A, Critter B) {
@@ -255,6 +280,42 @@ public abstract class Critter {
 		int rollsA = 0, rollsB = 0;
 		boolean killB = A.fight(B.toString());
 		boolean killA = B.fight(A.toString());
+		if(killB==false){
+			if(A.moved==false){
+				int dir = Critter.getRandomInt(8);
+				position prepos = null;
+				prepos.x=A.calculateMovement(dir, 2).x;
+				prepos.y=A.calculateMovement(dir, 2).y;
+                if(!map.containsKey(prepos)){
+                	int rand = getRandomInt(2);
+                	if(rand == 0)
+                		A.walk(dir);
+                	else
+                		A.run(dir);
+                	
+                }
+				
+			}
+		}
+		
+		if(killA==false){
+			if(B.moved==false){
+				int dir = Critter.getRandomInt(8);
+				position prepos=null;
+				prepos.x=B.calculateMovement(dir, 2).x;
+				prepos.y=B.calculateMovement(dir, 2).y;
+                if(!map.containsKey(prepos)){
+                	int rand = getRandomInt(2);
+                	if(rand == 0)
+                		B.walk(dir);
+                	else
+                		B.run(dir);
+                }
+				
+			}
+		}
+		
+
 		if (killA == true && killB == true && A.energy > 0 && B.energy > 0 && A.position.equals(B.position)) {
 			rollsA = Critter.getRandomInt(A.energy);
 			rollsB = Critter.getRandomInt(B.energy);
@@ -303,7 +364,7 @@ public abstract class Critter {
 			for(int j = 0; j < cols;j++)
 			{
 				boolean critterFlag = false;
-				for(Critter c : population)
+				for(Critter c : critterCollection)
 				{
 					if((c.y_coord == i) && (c.x_coord == j) && (critterFlag == false))
 					{
@@ -330,9 +391,8 @@ public abstract class Critter {
 		return;
 	}
 	
-	private static void encounter(){}
-	
 	/* a one-character long string that visually depicts your critter in the ASCII interface */
+	@Override
 	public String toString() { return ""; }
 	
 	/* the TestCritter class allows some critters to "cheat". If you want to 

@@ -1,3 +1,13 @@
+/* CRITTERS Garry.java
+ * EE422C Project 4 submission by
+ * Replace <...> with your actual data.
+ * Kassandra Perez
+ * Kap2589
+ * Haoran Niu
+ * hn4582
+ * Slip days used: <0>
+ * Summer 2016
+ */
 package project4;
 
 public class Garry extends Critter {
@@ -13,21 +23,26 @@ public class Garry extends Critter {
 		{
 			genes[k] = GENE_TOTAL / 8;
 		}
-		dir = Critter.getRandomInt(8);
+		dir = Critter.getRandomInt(5);
 	}
 	
+	@Override
 	public boolean fight(String not_used) 
 	{
-		return true; 
+		int rand = Critter.getRandomInt(2);
+		if(rand == 0)
+			return true; 
+		else
+			return false;
 	}
 
 	@Override
 	public void doTimeStep() 
 	{
 		/* take one step forward */
-		walk(dir);
+		run(dir);
 		
-		if (getEnergy() > 150) {
+		if (getEnergy() > 250) {
 			Garry child = new Garry();
 			for (int k = 0; k < 8; k += 1) {
 				child.genes[k] = this.genes[k];

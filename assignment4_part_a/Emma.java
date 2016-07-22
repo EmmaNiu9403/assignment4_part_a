@@ -1,3 +1,13 @@
+/* CRITTERS Emma.java
+ * EE422C Project 4 submission by
+ * Replace <...> with your actual data.
+ * Kassandra Perez
+ * Kap2589
+ * Haoran Niu
+ * hn4582
+ * Slip days used: <0>
+ * Summer 2016
+ */
 package project4;
 
 public class Emma extends Critter {
@@ -13,17 +23,18 @@ public class Emma extends Critter {
 		for (int k = 0; k < 8; k += 1) {
 			genes[k] = GENE_TOTAL / 8;
 		}
-		dir = Critter.getRandomInt(8);
+		dir = 4;
 	}
 	
+	@Override
 	public boolean fight(String not_used) { 
 		return true; 
-		}
+	}
 
 	@Override
 	public void doTimeStep() {
 		/* take one step forward */
-		walk(dir);
+		run(dir);
 		if (getEnergy() > 150) {
 			Emma child = new Emma();
 			for (int k = 0; k < 8; k += 1) {

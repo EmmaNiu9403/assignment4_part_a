@@ -1,3 +1,13 @@
+/* CRITTERS Craig.java
+ * EE422C Project 4 submission by
+ * Replace <...> with your actual data.
+ * Kassandra Perez
+ * Kap2589
+ * Haoran Niu
+ * hn4582
+ * Slip days used: <0>
+ * Summer 2016
+ */
 package project4;
 
 public class Craig extends Critter {
@@ -15,6 +25,7 @@ public class Craig extends Critter {
 		dir = Critter.getRandomInt(8);
 	}
 	
+	@Override
 	public boolean fight(String not_used) 
 	{
 		return true; 
