@@ -81,7 +81,7 @@ public class Garry extends Critter {
 			total_back += c.genes[4];
 			total_left += c.genes[5] + c.genes[6] + c.genes[7];
 		}
-		System.out.print("" + garrys.size() + " total Craigs    ");
+		System.out.print("" + garrys.size() + " total Garrys    ");
 		System.out.print("" + total_straight / (GENE_TOTAL * 0.01 * garrys.size()) + "% straight   ");
 		System.out.print("" + total_back / (GENE_TOTAL * 0.01 * garrys.size()) + "% back   ");
 		System.out.print("" + total_right / (GENE_TOTAL * 0.01 * garrys.size()) + "% right   ");
